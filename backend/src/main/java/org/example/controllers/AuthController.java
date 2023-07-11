@@ -80,7 +80,6 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new MessageResponse("Email уже используется"));
         }
 
-        // Создаем нового пользователя
         User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()));
 
