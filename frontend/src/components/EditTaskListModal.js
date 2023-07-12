@@ -57,15 +57,6 @@ const EditTaskListModal = ({ taskList, isVisible, onCancel, onSave, statusOption
                         ))}
                     </Select>
                 </Form.Item>
-                <Form.Item label="Регулярность">
-                    <Select value={editedTaskList.regularity} onChange={(value) => handleInputChange('regularity', value)}>
-                        {regularityOptions.map((option) => (
-                            <Select.Option key={option} value={option.name}>
-                                {option.name}
-                            </Select.Option>
-                        ))}
-                    </Select>
-                </Form.Item>
                 <Form.Item label="Дата">
                     <DatePicker
                         showTime
