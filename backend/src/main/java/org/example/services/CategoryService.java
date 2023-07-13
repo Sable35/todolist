@@ -16,4 +16,5 @@ public interface CategoryService {
     List<CutCategory> findAll();
 
     boolean isCategoryExist(long idCategory);
+
 }

@@ -15,6 +15,5 @@ public class CutTask {
         this.id = task.getId();
         this.name = task.getName();
         this.parentTaskId = task.getParentTask().getId();
-        ListTaskId = task.getTaskList().getId();
     }
 }

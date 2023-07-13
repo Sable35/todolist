@@ -1,5 +1,6 @@
 package org.example.repositories;
 
+import org.example.entities.CutTask;
 import org.example.entities.Task;
 import org.example.entities.TaskList;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,5 +13,6 @@ import java.util.List;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    List<Task> findByCategory_Id(long id);
+    List<Task> findByTaskList_Id(long IdTaskList);
+
 }

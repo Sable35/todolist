@@ -26,9 +26,6 @@ public class TaskList {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime dateNotify;
 
-    @OneToMany(mappedBy = "taskList", cascade = CascadeType.REMOVE)
-    private List<Task> tasks;
-
     @ManyToOne
     private Category category;
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {Button, Tree} from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 
 const { TreeNode } = Tree;
 

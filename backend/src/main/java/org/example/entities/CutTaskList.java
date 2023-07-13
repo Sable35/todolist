@@ -28,8 +28,5 @@ public class CutTaskList {
         this.priority = taskList.getPriority();
         this.status = taskList.getStatus();
         this.regularity = taskList.getRegularity();
-        for (Task task: taskList.getTasks()) {
-            this.tasks.add(new CutTask(task));
-        }
     }
 }

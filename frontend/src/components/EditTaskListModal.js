@@ -1,57 +1,100 @@
-import React, { useState } from 'react';
-import { Modal, Form, Input, Select } from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Modal, Form, Input, Select, DatePicker} from 'antd';
+import {useDispatch, useSelector} from "react-redux";
+import TaskListService from "../services/TaskListService";
+import CategoryService from "../services/CategoryService";
+import moment from 'moment';
 
-const EditTaskListModal = ({ taskList, isVisible, onCancel, onSave, statusOptions, categoryOptions, priorityOptions, regularityOptions }) => {
+const EditTaskListModal = ({ taskList, isVisible, onCancel}) => {
     const [editedTaskList, setEditedTaskList] = useState(taskList);
+    const { user: currentUser } = useSelector((state) => state.auth);
+    const statuses = useSelector((state) => state.tasklists.statuses);
+    const categories = useSelector((state) => state.categories.categories);
+    const priorities = useSelector((state) => state.tasklists.priorities);
+    const regularities = useSelector((state) => state.tasklists.regularities);
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        if (currentUser){
+            TaskListService.getStatuses(dispatch);
+            TaskListService.getPriorities(dispatch);
+            TaskListService.getRegularities(dispatch);
+            CategoryService.getCategories(dispatch);
+        }
+    }, [currentUser]);
 
     const handleInputChange = (name, value) => {
         setEditedTaskList((prevTask) => ({ ...prevTask, [name]: value }));
     };
 
+    const handleDateChange = (name, date) => {
+        const formattedDate = moment(date).format('YYYY-MM-DD HH:mm');
+        setEditedTaskList((prevTask) => ({ ...prevTask, [name]: formattedDate }));
+    };
+
     const handleSaveClick = () => {
-        onSave(editedTaskList);
+        TaskListService.updateTaskList({
+            "id": taskList.id,
+            "name": editedTaskList.name,
+            "description": editedTaskList.description,
+            "status": editedTaskList.status,
+            "category": editedTaskList.category,
+            "priority": editedTaskList.priorities,
+            "regularity": editedTaskList.regularity,
+            "dateNotify": editedTaskList.dateNotify },
+            dispatch)
     };
 
     return (
-        <Modal title="Редактирование задачи" visible={isVisible} onCancel={onCancel} onOk={handleSaveClick}>
+        <Modal title="Редактирование задачи" open={isVisible} onCancel={onCancel} onOk={handleSaveClick}>
             <Form>
                 <Form.Item label="Название">
-                    <Input value={editedTaskList.name} onChange={(e) => handleInputChange('name', e.target.value)} />
+                    <Input defaultValue={editedTaskList.name} onChange={(e) => handleInputChange('name', e.target.value)} />
                 </Form.Item>
                 <Form.Item label="Описание">
-                    <Input value={editedTaskList.description} onChange={(e) => handleInputChange('description', e.target.value)} />
+                    <Input.TextArea
+                        defaultValue={editedTaskList.description}
+                        onChange={(e) => handleInputChange('description', e.target.value)}
+                        rows={5}
+                    />
                 </Form.Item>
                 <Form.Item label="Статус">
-                    <Select value={editedTaskList.status} onChange={(value) => handleInputChange('status', value)}>
-                        {statusOptions.map((option) => (
-                            <Select.Option key={option} value={option.name}>
+                    <Select
+                        defaultValue={editedTaskList.status.id}
+                        onChange={(value) => handleInputChange('status', value)}
+                    >
+                        {statuses.map((option) => (
+                            <Select.Option
+                                key={option.id}
+                                value={option.id}
+                            >
                                 {option.name}
                             </Select.Option>
                         ))}
                     </Select>
                 </Form.Item>
                 <Form.Item label="Категория">
-                    <Select value={editedTaskList.category} onChange={(value) => handleInputChange('category', value)}>
-                        {categoryOptions.map((option) => (
-                            <Select.Option key={option} value={option.name}>
+                    <Select defaultValue={editedTaskList.category.id} onChange={(value) => handleInputChange('category', value)}>
+                        {categories.map((option) => (
+                            <Select.Option key={option.id} value={option.id}>
                                 {option.name}
                             </Select.Option>
                         ))}
                     </Select>
                 </Form.Item>
                 <Form.Item label="Приоритет">
-                    <Select value={editedTaskList.priority} onChange={(value) => handleInputChange('priority', value)}>
-                        {priorityOptions.map((option) => (
-                            <Select.Option key={option} value={option.name}>
+                    <Select defaultValue={editedTaskList.priority.id} onChange={(value) => handleInputChange('priority', value)}>
+                        {priorities.map((option) => (
+                            <Select.Option key={option.id} value={option.id}>
                                 {option.name}
                             </Select.Option>
                         ))}
                     </Select>
                 </Form.Item>
                 <Form.Item label="Регулярность">
-                    <Select value={editedTaskList.regularity} onChange={(value) => handleInputChange('regularity', value)}>
-                        {regularityOptions.map((option) => (
-                            <Select.Option key={option} value={option.name}>
+                    <Select defaultValue={editedTaskList.regularity.id} onChange={(value) => handleInputChange('regularity', value)}>
+                        {regularities.map((option) => (
+                            <Select.Option key={option.id} value={option.id}>
                                 {option.name}
                             </Select.Option>
                         ))}

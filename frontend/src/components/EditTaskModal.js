@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { Modal, Form, Input } from 'antd';
+import TaskListService from "../services/TaskListService";
+import {useDispatch} from "react-redux";
 
-const EditTaskModal = ({ Task, isVisible, onCancel, onSave }) => {
+const EditTaskModal = ({ Task, isVisible, onCancel}) => {
     const [editedTask, setEditedTask] = useState(Task);
+    const dispatch = useDispatch()
 
     const handleInputChange = (name, value) => {
         setEditedTask((prevTask) => ({ ...prevTask, [name]: value }));
     };
 
     const handleSaveClick = () => {
-        onSave(editedTask);
+        TaskListService.updateTask({"id": Task.id, "name": editedTask.name},dispatch)
     };
 
     return (

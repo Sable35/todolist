@@ -16,9 +16,12 @@ public class TaskListServiceImpl implements TaskListService{
     private final CategoryService categoryService;
     private final TaskListRepository taskListRepository;
 
-    public TaskListServiceImpl(CategoryService categoryService, TaskListRepository taskListRepository) {
+    private final TaskService taskService;
+
+    public TaskListServiceImpl(CategoryService categoryService, TaskListRepository taskListRepository, TaskService taskService) {
         this.categoryService = categoryService;
         this.taskListRepository = taskListRepository;
+        this.taskService = taskService;
     }
 
     @Override
@@ -45,16 +48,21 @@ public class TaskListServiceImpl implements TaskListService{
                 .flatMap(category ->
                         taskListRepository.findByCategory_Id(category.getId())
                                 .stream()
-                                .map(CutTaskList::new))
+                                .map(taskList -> {CutTaskList cutTaskList = new CutTaskList(taskList);
+                                    cutTaskList.setTasks(taskService.findTasksByTaskList_Id(cutTaskList.getId()));
+                                    return cutTaskList;}))
                 .toList();
     }
 
     @Override
-    public List<CutTaskList> findTaskByIdCategory(long idCategory) {
+    public List<CutTaskList> findTaskListByIdCategory(long idCategory) {
         if(categoryService.isCategoryExist(idCategory)){
             return taskListRepository.findByCategory_Id(idCategory)
                     .stream()
-                    .map(CutTaskList::new).toList();
+                    .map(taskList -> {CutTaskList cutTaskList = new CutTaskList(taskList);
+                        cutTaskList.setTasks(taskService.findTasksByTaskList_Id(cutTaskList.getId()));
+                    return cutTaskList;})
+                    .toList();
         }
         return List.of();
     }

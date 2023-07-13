@@ -56,8 +56,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getRequestURI().startsWith("/api/auth")
-                || request.getMethod().equals(HttpMethod.GET.name());
+        return request.getRequestURI().startsWith("/api/auth");
+                //|| request.getMethod().equals(HttpMethod.GET.name());
     }
 
     private String parseJwt(HttpServletRequest request) {

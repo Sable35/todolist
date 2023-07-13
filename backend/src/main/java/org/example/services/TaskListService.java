@@ -12,7 +12,7 @@ public interface TaskListService {
 
     List<CutTaskList> findAll();
 
-    List<CutTaskList> findTaskByIdCategory(long idCategory);
+    List<CutTaskList> findTaskListByIdCategory(long idCategory);
 
     boolean update(TaskList taskList);
 }

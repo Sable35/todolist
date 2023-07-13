@@ -46,7 +46,7 @@ public class TaskListController {
             log.info("Обновление информации о задаче успешно");
             return ResponseEntity.ok().build();
         } else {
-            log.warn("Обновление информации о задаче провалено");
+            log.warn("Обновление информации о задаче прошло неуспешно");
             return ResponseEntity.notFound().build();
         }
     }
@@ -73,7 +73,7 @@ public class TaskListController {
     @GetMapping("/categories")
     public List<CutTaskList> getTaskListsByCategory(@RequestParam long IdCategory) {
         log.info("Получение задач по категории");
-        return taskListService.findTaskByIdCategory(IdCategory);
+        return taskListService.findTaskListByIdCategory(IdCategory);
     }
 
     @GetMapping("/statuses")

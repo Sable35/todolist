@@ -38,11 +38,11 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/auth/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/carts/**").permitAll()
-                                .requestMatchers(HttpMethod.OPTIONS, "/products/**").permitAll()
-                                .requestMatchers(HttpMethod.OPTIONS, "/carts/**").permitAll()
-                                .requestMatchers(HttpMethod.OPTIONS, "/payments/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
+                                .requestMatchers(HttpMethod.OPTIONS, "/categories/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/taskLists/**").permitAll()
+                                .requestMatchers(HttpMethod.OPTIONS, "/taskLists/**").permitAll()
+                                .requestMatchers(HttpMethod.OPTIONS, "/tasks/**").permitAll()
                                 .anyRequest().authenticated()
                 );
 
