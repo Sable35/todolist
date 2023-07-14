@@ -15,32 +15,31 @@ const TasksPage = () => {
     const { user: currentUser } = useSelector((state) => state.auth);
     const [filteredData, setFilteredData] = useState(treeData);
     const [searchName, setSearchName] = useState('');
-    const [selectedStatus, setSelectedStatus] = useState('');
-    const [selectedPriority, setSelectedPriority] = useState('');
-    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedStatus, setSelectedStatus] = useState(null);
+    const [selectedPriority, setSelectedPriority] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(null);
     const dispatch = useDispatch()
 
-    // Применяем фильтры
+    const handleDateChange = (date) => {
+        setSelectedDate(date);
+    };
+
     useEffect(() => {
         let filtered = treeData;
-
         if (searchName) {
             filtered = filtered.filter(cardData => cardData.name.toLowerCase().includes(searchName.toLowerCase()));
         }
-
         if (selectedStatus) {
             filtered = filtered.filter(cardData => cardData.status === selectedStatus);
         }
-
         if (selectedPriority) {
             filtered = filtered.filter(cardData => cardData.priority === selectedPriority);
         }
-
         if (selectedDate) {
             filtered = filtered.filter(cardData => {
-                const cardDate = new Date(cardData.date);
-                const selectedDateTime = new Date(selectedDate);
-                return cardDate >= selectedDateTime;
+                const cardDate = new Date(cardData.dateNotify);
+                const selectedDateTime = new Date(selectedDate.format("YYYY-MM-DD HH:mm:ss"));
+                return cardDate <= selectedDateTime;
             });
         }
 
@@ -70,9 +69,9 @@ const TasksPage = () => {
                         <Option key={priority.id} value={priority.id}>{priority.name}</Option>
                     ))}
                 </Select>
-                <DatePicker style={{ minWidth: 150 }} placeholder="Выбор даты"
-                            showTime value={selectedDate} onChange={(date, dateString) => setSelectedDate(dateString)} />
+                <DatePicker format={"YYYY-MM-DD HH:mm:ss"} style={{ minWidth: 150, marginRight: 10 }} placeholder="Поиск по дате" onChange={handleDateChange} />
             </div >
+
             <div style={{ display: "flex",
                 flexWrap: "wrap",
                 justifyContent: "flex-start",

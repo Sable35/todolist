@@ -1,4 +1,5 @@
 import {Button, Layout, Menu, theme, Dropdown, Space} from 'antd';
+import {PlusOutlined, MinusOutlined, DeleteOutlined, EditOutlined, FolderOutlined} from '@ant-design/icons';
 import React, {useEffect, useState} from 'react';
 import { Content, Header } from 'antd/es/layout/layout';
 import {useDispatch, useSelector} from "react-redux";
@@ -48,9 +49,9 @@ function App() {
 
     const menuProps = {
         items: [
-            ...items.map((item) => ({ key: item.key, label: item.label })),
-            { key: "add", label: "Добавить категорию" },
-            { key: "edit", label: "Редактировать категории" }
+            ...items.map((item) => ({ key: item.key, label: item.label, icon: <FolderOutlined /> })),
+            { key: "add", label: "Добавить категорию", icon: <PlusOutlined/> },
+            { key: "edit", label: "Редактировать категории", icon: <EditOutlined/> }
         ],
         onClick: (item) => {
             if (item.key === "add") {
@@ -104,18 +105,16 @@ function App() {
                     color:'white'
                 }}
             >
-                <h1 >JUST DO IT!</h1>
-                <div style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center', }}>
-
-
+                <div style={{ display: 'flex', alignItems: 'center'}}>
+                    <Link to={"/"}><h1>JUST DO IT!</h1></Link>
                     <Dropdown menu={menuProps}>
                         <Link to={"/Tasks"}>
-                        <Button >
-                            <Space>
-                                Задачи
-                                <DownOutlined />
-                            </Space>
-                        </Button>
+                            <Button  style={{ marginLeft: '15px' }}>
+                                <Space>
+                                    Задачи
+                                    <DownOutlined />
+                                </Space>
+                            </Button>
                         </Link>
                     </Dropdown>
                     <EditCategoryModal isVisible={isModalEditVisible} onCancel={handleEditCancel} categories={categories}/>

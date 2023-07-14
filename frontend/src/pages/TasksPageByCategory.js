@@ -22,6 +22,10 @@ const TasksPageByCategory = ({IdCategory}) => {
 
     const category = categories.find((category) => category.id === IdCategory);
 
+    const handleDateChange = (date) => {
+        setSelectedDate(date);
+    };
+
     // Применяем фильтры
     useEffect(() => {
         let filtered = treeData;
@@ -40,9 +44,9 @@ const TasksPageByCategory = ({IdCategory}) => {
 
         if (selectedDate) {
             filtered = filtered.filter(cardData => {
-                const cardDate = new Date(cardData.date);
-                const selectedDateTime = new Date(selectedDate);
-                return cardDate >= selectedDateTime;
+                const cardDate = new Date(cardData.dateNotify);
+                const selectedDateTime = new Date(selectedDate.format("YYYY-MM-DD HH:mm:ss"));
+                return cardDate <= selectedDateTime;
             });
         }
 
@@ -80,7 +84,7 @@ const TasksPageByCategory = ({IdCategory}) => {
                         <Option key={priority.id} value={priority.id}>{priority.name}</Option>
                     ))}
                 </Select>
-                <DatePicker style={{ minWidth: 150 }} placeholder="Выбор даты" showTime value={selectedDate} onChange={(date, dateString) => setSelectedDate(dateString)} />
+                <DatePicker format={"YYYY-MM-DD HH:mm:ss"} style={{ minWidth: 150, marginRight: 10 }} placeholder="Поиск по дате" onChange={handleDateChange} />
             </div>
             <div style={{ margin: "15px 0" }}>
                 <Button type="primary" onClick={handleNewTaskClick}>Новая задача</Button>
