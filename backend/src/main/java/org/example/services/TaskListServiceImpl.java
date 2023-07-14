@@ -23,6 +23,13 @@ public class TaskListServiceImpl implements TaskListService{
         this.taskListRepository = taskListRepository;
         this.taskService = taskService;
     }
+    @Override
+    public TaskList findById(long id){
+        Optional<TaskList> taskList = taskListRepository.findById(id);
+        if (taskList.isPresent()){
+            return taskList.get();
+        } else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
 
     @Override
     public long save(TaskList taskList){

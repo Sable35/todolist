@@ -11,7 +11,7 @@ public class CutTaskList {
     private long id;
     private String name;
     private String description;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "YYYY-MM-DD HH:mm:ss")
     private LocalDateTime dateNotify;
     private CutCategory category;
     private Priority priority;

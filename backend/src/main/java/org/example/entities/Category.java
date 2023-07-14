@@ -19,7 +19,4 @@ public class Category {
 
     @ManyToOne
     private User user;
-
-    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
-    private List<TaskList> taskLists;
 }

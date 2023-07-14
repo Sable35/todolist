@@ -1,24 +1,27 @@
 import {Button, Layout, Menu, theme, Dropdown, Space} from 'antd';
 import React, {useEffect, useState} from 'react';
 import { Content, Header } from 'antd/es/layout/layout';
-import {Scrollbar} from 'react-scrollbars-custom';
 import {useDispatch, useSelector} from "react-redux";
 import Logup from "./components/Logup";
 import Login from "./components/Login";
 import AuthService from "./services/AuthService";
 import {logout} from "./slices/AuthSlice";
-import Sider from "antd/es/layout/Sider";
 import CategoryService from "./services/CategoryService";
 import { DownOutlined } from '@ant-design/icons';
-import {Link, Route, Routes} from "react-router-dom";
-import {NotFoundPage} from "./pages/NotFoundPage";
+import {Link, Route, Routes, useNavigate} from "react-router-dom";
 import TasksPage from "./pages/TasksPage";
+import TasksPageByCategory from "./pages/TasksPageByCategory";
+import {HomePage} from "./pages/HomePage";
+import EditCategoryModal from "./components/EditCategoryModal";
 function App() {
 
     const {user: currentUser} = useSelector((state) => state.auth);
     const categories = useSelector((state) => state.categories.categories);
     const [isModalRegisterVisible, setIsModalRegisterVisible] = useState(false);
     const [isModalAuthVisible, setIsModalAuthVisible] = useState(false);
+    const [isModalEditVisible, setIsModalEditVisible] = useState(false);
+    const [IdCategory, setIdCategory] = useState(-1);
+    const navigate = useNavigate();
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -34,6 +37,9 @@ function App() {
 
     const handleMenuTasksClick = (item) => {
         console.log(item);
+        setIdCategory(item.key);
+        navigate("/Tasks/Category")
+        console.log(IdCategory);
     };
 
     const handleAddCategoryClick = () => {
@@ -44,13 +50,14 @@ function App() {
         items: [
             ...items.map((item) => ({ key: item.key, label: item.label })),
             { key: "add", label: "Добавить категорию" },
+            { key: "edit", label: "Редактировать категории" }
         ],
         onClick: (item) => {
             if (item.key === "add") {
                 handleAddCategoryClick();
-            } else {
-                handleMenuTasksClick(item);
-            }
+            } else if (item.key === "edit") {
+                handleEditClick()
+            } else handleMenuTasksClick(item);
         },
     };
 
@@ -69,12 +76,18 @@ function App() {
     const handleAuthCancel = () => {
         setIsModalAuthVisible(false);
     };
+
+    const handleEditClick = () => {
+        setIsModalEditVisible(true);
+        console.log(isModalEditVisible)
+    };
+
+    const handleEditCancel = () => {
+        setIsModalEditVisible(false);
+    };
     const handleExit = () => {
         dispatch(logout(currentUser))
         AuthService.logout();
-    };
-
-    const handleTasksButton = () => {
     };
 
     const {
@@ -92,12 +105,12 @@ function App() {
                 }}
             >
                 <h1 >JUST DO IT!</h1>
-                <div>
+                <div style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center', }}>
 
 
                     <Dropdown menu={menuProps}>
                         <Link to={"/Tasks"}>
-                        <Button onClick={handleTasksButton}>
+                        <Button >
                             <Space>
                                 Задачи
                                 <DownOutlined />
@@ -105,6 +118,7 @@ function App() {
                         </Button>
                         </Link>
                     </Dropdown>
+                    <EditCategoryModal isVisible={isModalEditVisible} onCancel={handleEditCancel} categories={categories}/>
                 </div>
                 {currentUser ? <div style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center', }}>
                         <h2 style={{ marginRight: '15px' }}>{currentUser.username}</h2>
@@ -142,7 +156,9 @@ function App() {
                     <Layout>
                         <Content style={{padding: '0 50px',}}>
                             <Routes>
+                                <Route index element={<HomePage />} />
                                 <Route path="/Tasks" element={<TasksPage />} />
+                                <Route path="/Tasks/Category" element={<TasksPageByCategory IdCategory={IdCategory} />} />
                             </Routes>
                         </Content>
                     </Layout>

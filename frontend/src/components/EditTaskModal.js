@@ -12,7 +12,7 @@ const EditTaskModal = ({ Task, isVisible, onCancel}) => {
     };
 
     const handleSaveClick = () => {
-        TaskListService.updateTask({"id": Task.id, "name": editedTask.name},dispatch)
+        TaskListService.updateTask({"id": Task.id, "name": editedTask.name, "taskList":{"id":Task.listTaskId},"parentTask":{"id":Task.parentTaskId}},dispatch)
     };
 
     return (

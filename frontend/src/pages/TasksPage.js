@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import { Tree, Input, Select, DatePicker } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import { Tree, Input, Select, DatePicker, Button } from 'antd';
 import TreeCard from '../components/TreeCard';
 import TaskListService from "../services/TaskListService";
+
 
 const { Option } = Select;
 
@@ -56,6 +57,7 @@ const TasksPage = () => {
 
     return (
         <>
+            <div><h1  style={{fontSize:"25px"}}>Все задачи</h1></div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <Input style={{ minWidth: 200, marginRight: 10 }} placeholder="Поиск по имени" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
                 <Select style={{ minWidth: 150, marginRight: 10 }} placeholder="Выбор статуса" value={selectedStatus} onChange={(value) => setSelectedStatus(value)}>
@@ -68,9 +70,13 @@ const TasksPage = () => {
                         <Option key={priority.id} value={priority.id}>{priority.name}</Option>
                     ))}
                 </Select>
-                <DatePicker style={{ minWidth: 150 }} placeholder="Выбор даты" showTime value={selectedDate} onChange={(date, dateString) => setSelectedDate(dateString)} />
-            </div>
-            <div>
+                <DatePicker style={{ minWidth: 150 }} placeholder="Выбор даты"
+                            showTime value={selectedDate} onChange={(date, dateString) => setSelectedDate(dateString)} />
+            </div >
+            <div style={{ display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "flex-start",
+                margin: "20px 0"}}>
                 {filteredData.map((cardData) => (
                     <TreeCard key={cardData.id} cardData={cardData} />
                 ))}

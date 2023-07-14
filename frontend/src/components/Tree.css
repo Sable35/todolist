@@ -1,0 +1,22 @@
+.tree-node-title {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.btn-group {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.tree-node-title:hover .btn-group {
+  display: flex;
+}
+
+.btn-icon {
+  cursor: pointer;
+  margin-left: 4px;
+}

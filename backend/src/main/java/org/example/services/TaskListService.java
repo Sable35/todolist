@@ -6,6 +6,8 @@ import org.example.entities.TaskList;
 import java.util.List;
 
 public interface TaskListService {
+    TaskList findById(long id);
+
     long save(TaskList taskList);
 
     boolean delete(long idTaskList);

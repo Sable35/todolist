@@ -18,7 +18,4 @@ public class Regularity {
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private ERegularity name;
-
-    @OneToMany(mappedBy = "regularity", cascade = CascadeType.REMOVE)
-    private List<TaskList> tasks;
 }

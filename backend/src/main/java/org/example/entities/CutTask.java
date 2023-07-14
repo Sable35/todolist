@@ -14,6 +14,9 @@ public class CutTask {
     public CutTask(Task task) {
         this.id = task.getId();
         this.name = task.getName();
-        this.parentTaskId = task.getParentTask().getId();
+        if (task.getParentTask() != null){
+            this.parentTaskId = task.getParentTask().getId();
+        }
+
     }
 }

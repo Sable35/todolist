@@ -18,7 +18,7 @@ public class Task {
     @Column
     private String name;
 
-    @ManyToOne(optional = true, cascade = CascadeType.REMOVE)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "parent_id")
     private Task parentTask;
 

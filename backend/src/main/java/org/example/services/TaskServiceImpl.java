@@ -3,6 +3,7 @@ package org.example.services;
 import org.example.entities.CutTask;
 import org.example.entities.Task;
 import org.example.entities.TaskList;
+import org.example.repositories.TaskListRepository;
 import org.example.repositories.TaskRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,10 +17,12 @@ import java.util.Optional;
 public class TaskServiceImpl implements TaskService{
     private final TaskRepository taskRepository;
     private final CategoryService categoryService;
+    private final TaskListRepository taskListRepository;
 
-    public TaskServiceImpl(TaskRepository taskRepository, CategoryService categoryService) {
+    public TaskServiceImpl(TaskRepository taskRepository, CategoryService categoryService, TaskListRepository taskListRepository) {
         this.taskRepository = taskRepository;
         this.categoryService = categoryService;
+        this.taskListRepository = taskListRepository;
     }
 
     @Override
@@ -37,7 +40,7 @@ public class TaskServiceImpl implements TaskService{
 
     @Override
     public long save(Task task) {
-        if(categoryService.isCategoryExist(task.getTaskList().getCategory().getId())) {
+        if(categoryService.isCategoryExist(taskListRepository.findById(task.getTaskList().getId()).get().getCategory().getId())) {
             return taskRepository.save(task).getId();
         } else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
@@ -45,7 +48,7 @@ public class TaskServiceImpl implements TaskService{
     @Override
     public boolean update(Task task) {
         if (taskRepository.existsById(task.getId())
-                && categoryService.isCategoryExist(task.getTaskList().getCategory().getId())) {
+                && categoryService.isCategoryExist(taskListRepository.findById(task.getTaskList().getId()).get().getCategory().getId())) {
             taskRepository.save(task);
             return true;
         }

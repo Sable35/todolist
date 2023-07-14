@@ -22,7 +22,7 @@ public class TaskList {
     private String description;
 
     @Column(name = "date_notify")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "YYYY-MM-DD HH:mm:ss")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime dateNotify;
 

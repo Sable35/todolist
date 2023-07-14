@@ -7,6 +7,7 @@ import org.example.repositories.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService{
@@ -20,7 +21,8 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public long save(Category category){
-        category.setUser(new User(userService.getUserIdFromContext()));
+        User user = new User(userService.getUserIdFromContext());
+        category.setUser(user);
         categoryRepository.save(category);
         return category.getId();
     }
@@ -35,6 +37,8 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public boolean update(Category category) {
         if (isCategoryExist(category.getId())){
+            User user = new User(userService.getUserIdFromContext());
+            category.setUser(user);
             categoryRepository.save(category);
             return true;
         }
