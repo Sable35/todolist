@@ -8,7 +8,7 @@ public class CutTask {
 
     private long id;
     private String name;
-    private long parentTaskId;
+    private Long parentTaskId;
     private long ListTaskId;
 
     public CutTask(Task task) {

@@ -20,7 +20,7 @@ const TreeCard = ({ cardData }) => {
     };
 
     const handleAddTask = () => {
-        TaskListService.createTask({"name": "новая подзадача", "taskList": cardData},dispatch)
+        TaskListService.createTask({"name": "новая подзадача", "taskList": cardData, "parenTask": null},dispatch)
     };
 
     const handleDeleteCard = () => {

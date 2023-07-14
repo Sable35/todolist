@@ -21,7 +21,7 @@ const MyTree = ({ data }) => {
     const handleCloseModal = () => {
         setIsVisible(false);
     };
-    const generateTreeNodes = (nodes, parentId = 0) => {
+    const generateTreeNodes = (nodes, parentId = null) => {
         if (!nodes || !Array.isArray(nodes)) {
             return null;
         }

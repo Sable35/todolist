@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import TaskListService from "../services/TaskListService";
 import CategoryService from "../services/CategoryService";
 import moment from 'moment';
+import dayjs from "dayjs";
 
 const EditTaskListModal = ({ taskList, isVisible, onCancel}) => {
     const [editedTaskList, setEditedTaskList] = useState(taskList);
@@ -12,6 +13,11 @@ const EditTaskListModal = ({ taskList, isVisible, onCancel}) => {
     const categories = useSelector((state) => state.categories.categories);
     const priorities = useSelector((state) => state.tasklists.priorities);
     const regularities = useSelector((state) => state.tasklists.regularities);
+    const dateFormat = "YYYY-MM-DD HH:mm:ss";
+    const disabledDate = (current) => {
+        const yesterday = dayjs().subtract(1, 'day').endOf('day');
+        return current && current < yesterday;
+    };
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -23,29 +29,42 @@ const EditTaskListModal = ({ taskList, isVisible, onCancel}) => {
         }
     }, [currentUser]);
 
-    const handleInputChange = (name, value) => {
-        setEditedTaskList((prevTask) => ({ ...prevTask, [name]: value }));
+    useEffect(() => {
+        setEditedTaskList({
+            ...taskList,
+            status: taskList.status.id,
+            category: taskList.category.id,
+            priority: taskList.priority.id,
+            regularity: taskList.regularity.id
+        });
+    }, [taskList]);
+
+    const handleInputChange = (field, value) => {
+        setEditedTaskList(prevState => ({
+            ...prevState,
+            [field]: value
+        }));
     };
 
-    const handleDateChange = (name, date) => {
-        const momentDate = moment(date, "YYYY-MM-DD HH:mm:ss");
-        setEditedTaskList((prevTask) => ({ ...prevTask, [name]: momentDate }));
+
+    const handleDateChange = (date) => {
+        if (date){
+            setEditedTaskList((prevTask) => ({ ...prevTask, "dateNotify": date.format("YYYY-MM-DD HH:mm:ss")}));
+        } else {
+            setEditedTaskList((prevTask) => ({ ...prevTask, "dateNotify": null}));
+        }
     };
 
     const handleSaveClick = () => {
-        const regularity = editedTaskList.regularity ? editedTaskList.regularity.id : taskList.regularity.id
-        const status = editedTaskList.status ? editedTaskList.status.id : taskList.status.id
-        const priority = editedTaskList.priority ? editedTaskList.priority.id : taskList.priority.id
-        const category = editedTaskList.category ? editedTaskList.category.id : taskList.category.id
         TaskListService.updateTaskList({
-            "id": taskList.id,
-            "name": editedTaskList.name,
-            "description": editedTaskList.description,
-            "status": {"id": status},
-            "category": {"id":category},
-            "priority": {"id":priority},
-            "regularity": {"id": regularity},
-            "dateNotify": editedTaskList.dateNotify},
+                "id": taskList.id,
+                "name": editedTaskList.name,
+                "description": editedTaskList.description,
+                "status": {"id": editedTaskList.status},
+                "category": {"id":editedTaskList.category},
+                "priority": {"id":editedTaskList.priority},
+                "regularity": {"id": editedTaskList.regularity},
+                "dateNotify": editedTaskList.dateNotify},
             dispatch)
     };
     return (
@@ -58,7 +77,7 @@ const EditTaskListModal = ({ taskList, isVisible, onCancel}) => {
                     <Input.TextArea value={editedTaskList.description} onChange={(e) => handleInputChange('description', e.target.value)} rows={5}/>
                 </Form.Item>
                 <Form.Item label="Статус">
-                    <Select value={editedTaskList.status.id} onChange={(value) => handleInputChange('status', value)}>
+                    <Select value={editedTaskList.status} onChange={(value) => handleInputChange('status', value)}>
                         {statuses.map((option) => (
                             <Select.Option key={option.id} value={option.id}>
                                 {option.name}
@@ -67,7 +86,7 @@ const EditTaskListModal = ({ taskList, isVisible, onCancel}) => {
                     </Select>
                 </Form.Item>
                 <Form.Item label="Категория">
-                    <Select value={editedTaskList.category.id} onChange={(value) => handleInputChange('category', value)}>
+                    <Select value={editedTaskList.category} onChange={(value) => handleInputChange('category', value)}>
                         {categories.map((option) => (
                             <Select.Option key={option.id} value={option.id}>
                                 {option.name}
@@ -76,7 +95,7 @@ const EditTaskListModal = ({ taskList, isVisible, onCancel}) => {
                     </Select>
                 </Form.Item>
                 <Form.Item label="Приоритет">
-                    <Select value={editedTaskList.priority.id} onChange={(value) => handleInputChange('priority', value)}>
+                    <Select value={editedTaskList.priority} onChange={(value) => handleInputChange('priority', value)}>
                         {priorities.map((option) => (
                             <Select.Option key={option.id} value={option.id}>
                                 {option.name}
@@ -85,7 +104,7 @@ const EditTaskListModal = ({ taskList, isVisible, onCancel}) => {
                     </Select>
                 </Form.Item>
                 <Form.Item label="Регулярность">
-                    <Select value={editedTaskList.regularity.id} onChange={(value) => handleInputChange('regularity', value)}>
+                    <Select value={editedTaskList.regularity} onChange={(value) => handleInputChange('regularity', value)}>
                         {regularities.map((option) => (
                             <Select.Option key={option.id} value={option.id}>
                                 {option.name}
@@ -94,12 +113,22 @@ const EditTaskListModal = ({ taskList, isVisible, onCancel}) => {
                     </Select>
                 </Form.Item>
                 <Form.Item label="Дата">
-                    <DatePicker
-                        showTime
-                        format = "YYYY-MM-DD HH:mm:ss"
-                        value={editedTaskList.dateNotify ? moment(editedTaskList.dateNotify, "YYYY-MM-DD HH:mm:ss") : undefined}
-                        onChange={(date) => handleDateChange('dateNotify', date)}
-                    />
+                    {editedTaskList.dateNotify ? (
+                        <DatePicker
+                            format={dateFormat}
+                            defaultValue={dayjs(editedTaskList.dateNotify, dateFormat)}
+                            disabledDate={disabledDate}
+                            onChange={handleDateChange}
+                            showTime={{ defaultValue: dayjs('00:00:00', 'HH:mm:ss') }}
+                        />
+                    ) : (
+                        <DatePicker
+                            format={dateFormat}
+                            disabledDate={disabledDate}
+                            onChange={handleDateChange}
+                            showTime={{ defaultValue: dayjs('00:00:00', 'HH:mm:ss') }}
+                        />
+                    )}
                 </Form.Item>
             </Form>
         </Modal>
